@@ -1,0 +1,5 @@
+rootProject.name = 'eureka.cloud'
+
+include 'eureka-server'
+include 'book-client'
+include 'customer-client'
