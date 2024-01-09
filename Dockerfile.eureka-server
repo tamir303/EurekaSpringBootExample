@@ -1,0 +1,21 @@
+FROM gradle:jdk17 AS builder
+WORKDIR /app
+
+# Copy source code
+COPY src ./src
+COPY build.gradle .
+COPY gradlew.bat .
+COPY gradle .
+
+# Build the application
+RUN gradle build
+
+# Use a lightweight base image for the server
+FROM openjdk:17
+WORKDIR /app
+
+COPY --from=builder /app/build/libs/eureka-server-1.0.jar /app/
+
+EXPOSE 8761
+
+CMD ["java", "-jar", "eureka-server-1.0.jar"]

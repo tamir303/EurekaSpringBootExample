@@ -1,9 +1,0 @@
-FROM openjdk:8-jre-alpine
-
-WORKDIR /app
-
-COPY target/eureka-client.jar /app/book-client.jar
-
-EXPOSE 8080
-
-CMD ["java", "-jar", "eureka-client.jar"]
