@@ -1,25 +1,25 @@
 package com.example.demo;
 
 public class BookBoundary {
-    private int id;
+    private String id;
 
     public BookBoundary() {
     }
 
-    public BookBoundary(int id) {
+    public BookBoundary(String id) {
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
     @Override
     public String toString() {
-        return "Book" + this.id;
+        return "Book : " + this.id;
     }
 }

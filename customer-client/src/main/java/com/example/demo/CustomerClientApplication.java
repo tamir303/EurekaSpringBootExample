@@ -1,36 +1,36 @@
 package com.example.demo;
 
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestClient;
-
-import java.util.List;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @RestController
 public class CustomerClientApplication {
-	private RestClient restClient;
-	private String bookUrl;
+	@Autowired
+	private EurekaClient eurekaClient;
 
-	@Value("${remote.book.url: http://BOOK-CLIENT/books}")
-	public void setBookUrl(String bookUrl) {
-		this.bookUrl = bookUrl;
-		this.restClient = RestClient.create(bookUrl);
-	}
+	@Autowired
+	private RestTemplate restTemplate;
 
-	@GetMapping(path = "takebooks/{count}",
-				produces = "application/json")
+	@GetMapping(path = "orderBooks/{count}", produces = "application/json")
 	public BookBoundary[] listOfBooks(@PathVariable("count") int count) {
-		return this.restClient
-				.get()
-				.uri("/{count}", count)
-				.retrieve()
-				.body(BookBoundary[].class);
+		InstanceInfo instance = eurekaClient.getNextServerFromEureka("BOOK-CLIENT", false);
+		String baseUrl = instance.getHomePageUrl();
+
+		String booksEndpoint = baseUrl + "books/" + count;
+		ResponseEntity<BookBoundary[]> response = restTemplate.getForEntity(booksEndpoint, BookBoundary[].class);
+
+		System.err.println(response.toString());
+
+		return response.getBody();
 	}
 
 
