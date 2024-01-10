@@ -3,15 +3,25 @@ services:
   eureka-server:
     build:
       context: ./eureka-server
-      dockerfile: Dockerfile.eureka-server
+      dockerfile: ../Dockerfile.eureka-server
     ports:
       - "8761:8761"
 
-  eureka-client:
+  book-client:
     build:
       context: ./book-client
-      dockerfile: Dockerfile.eureka-client
+      dockerfile: ../Dockerfile.book-client
     ports:
-      - "8081:8081"
+      - "80"
     depends_on:
       - eureka-server
+
+  customer-client:
+    build:
+      context: ./customer-client
+      dockerfile: ../Dockerfile.customer-client
+    ports:
+      - "80"
+    depends_on:
+      - eureka-server
+
